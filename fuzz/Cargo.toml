@@ -53,3 +53,9 @@ name = "row_piece"
 path = "fuzz_targets/row_piece.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "bootstrap"
+path = "fuzz_targets/bootstrap.rs"
+test = false
+doc = false

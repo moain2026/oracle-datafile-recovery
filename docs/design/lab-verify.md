@@ -44,3 +44,6 @@
 | LV-030 | `block.rs` (مُستعمَل في S1a) | format = النصف المنخفض من البايت 1 = 0x2 (8i+)؛ علم checksum 0x04 في البايت 15 ← XOR لكل الكتلة = 0 | T3 Stawiarski 2018 | ⬜ |
 | — | `scan/header.rs` | ثوابت العيّنة والقبول (1 GiB، 4096، 16، 99/100) **سياسة منتج** لا حقائق أوراكل — لا تُختبر في المختبر بل في Q2 (الدقة) | — | سياسة |
 | LV-031 | `scan/header.rs` (S1a مراجعة #10 B2) | bigfile tablespace: rdba = رقم كتلة 32-بت كاملاً بلا حقل ملف؛ الافتراضي لـ SYSTEM/SYSAUX/USERS منذ 23ai (23.4) و26ai ← لا يجوز إخراج `relative_file` من rdba دون تمييز smallfile/bigfile | T1 Oracle *Managing Tablespaces* 26ai؛ oracle-base 23ai (التخطيط: T4) | ⬜ |
+| LV-032 | `dict/bootstrap.rs` | `bootstrap$` = (LINE# NUMBER, OBJ# NUMBER, SQL_TEXT VARCHAR2(4000))؛ صف الإصدار LINE#=OBJ#=-1 ('8.0.0.0.0')؛ OBJ# = OBJNO في النص | cnblogs 2011 (BBED بالبايت)، dbi-services 2016 | ⬜ |
+| LV-033 | `dict/bootstrap.rs` | صيغة التخزين: `OBJNO n EXTENTS (FILE f BLOCK b)` للمقاطع، و`OBJNO n TABNO t) CLUSTER C(cols)` لجداول الـ cluster؛ OBJ$ = 18 @ (1,121)، C_OBJ# = 2 @ (1,144)، TAB$ tabno 1 — ثابتة منذ 8.0 | dbi-services، askmaclean، chinaunix | ⬜ لكل إصدار |
+| LV-034 | `dict/bootstrap.rs` | obj# لـ bootstrap$ نفسه: 56 (10g)، 59 (11g)؛ قائمة الكائنات < 56/59 | cnblogs 2011 | ⬜ 12c+ |

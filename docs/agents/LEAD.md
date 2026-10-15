@@ -10,5 +10,6 @@
 | L-4b | صفوف cluster (مفتاح/عضو، cki) + ROWDEPENDENCIES (dscn) + رفض الضغط صراحةً — من البحث R2 | REQ-002/003 | ✅ هذا الـ PR |
 | L-5 | تأكيد كل `lab-verify` على الملفات الذهبية لـ Astra | ADR-0004 | ⬜ ينتظر L3 |
 | L-5b | بحث الجولة 2 (`docs/research/03`) + صفوف cluster + ROWDEPENDENCIES + رفض الضغط صراحةً | REQ-002/003 | ✅ `lead/cluster-rowdep` |
+| L-6a | `dict::bootstrap`: صفوف bootstrap$ ← Catalog (OBJNO/TABNO/EXTENTS/CLUSTER، رفض التناقض) + `OraNumber::to_i64` الدقيق — متجه ذهبي من BBED | REQ-002 | ✅ هذا الـ PR |
 | L-6 | القاموس: kcvfhrdb ← bootstrap$ ← obj$/tab$(C_OBJ#)/col$/user$(C_USER#)/ts$/seg$/props$؛ PDB-aware؛ **قاعدة DEFAULT المُحسّنة (§6 من البحث) إلزامية** | REQ-002 | ⬜ |
 | L-7 | الاستدلال بدون قاموس (الميزة الفارقة) | M4 | ⬜ |

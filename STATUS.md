@@ -3,7 +3,7 @@ updated: 2026-10-15
 ---
 # الحالة الآن
 ## قيد العمل (سطر لكل وكيل — حدّثه بنفسك)
-- Lead — L-1..L-4 ✅ · بحث الجولة 2 + صفوف cluster + ROWDEPENDENCIES ✅ (`lead/cluster-rowdep`) · التالي L-6 القاموس (kcvfhrdb ← bootstrap$ ← C_OBJ#/C_USER#) — `lead/dictionary`
+- Lead — L-1..L-4b ✅ · مراجعة S1a (#10: تعديلات مطلوبة) · L-6a bootstrap$ ✅ · التالي L-6b: كتل bootstrap$ من kcvfhrdb + OBJ$/TAB$/COL$ — `lead/dictionary`
 - Astra — S1a PR #10: مراجعة Lead = تعديلات مطلوبة (B1 فصل التخطيط عن الإزاحة، B2 bigfile، B3 أغلبية بدل veto، B4 عتبة على الكتل الصالحة) — `genspark_ai_developer`
 ## معطّل / ينتظر
 - [2026-10-15] إجابات مقابلة خبير يمن سوفت (docs/research/02) — تحدد الأولويات: الإصدارات، الترميز العربي، ASM، الفدية
