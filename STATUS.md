@@ -3,7 +3,7 @@ updated: 2026-10-15
 ---
 # الحالة الآن
 ## قيد العمل (سطر لكل وكيل — حدّثه بنفسك)
-- Lead — L-1 ✅ (PR #2) · التالي L-2 الترميز العربي (AR8MSWIN1256/AL32UTF8) — `lead/charset`
+- Lead — L-1 ✅ مدموج · L-2 الترميز ✅ (PR #3) · التالي L-3 الأنواع (TIMESTAMP/INTERVAL/BINARY_*/ROWID) — `lead/types`
 - Astra — Step 0 ثم Track L (المختبر) أو S1 (header probe) — `agent/astra` — ينتظر التشغيل
 ## معطّل / ينتظر
 - [2026-10-15] إجابات مقابلة خبير يمن سوفت (docs/research/02) — تحدد الأولويات: الإصدارات، الترميز العربي، ASM، الفدية
