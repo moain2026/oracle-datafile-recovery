@@ -1,0 +1,247 @@
+//! Data header (`kdbh`), table directory (`kdbt`) and row directory (`kdbr`).
+//!
+//! `kdbh` (14 bytes, offsets relative to its start) — `lab-verify` LV-005/006/007:
+//!
+//! | off | size | field      | meaning                                    |
+//! |-----|------|------------|--------------------------------------------|
+//! | 0   | 1    | `kdbhflag` | flags                                      |
+//! | 1   | 1    | `kdbhntab` | number of tables (> 1 only for clusters)   |
+//! | 2   | 2    | `kdbhnrow` | number of row-directory entries            |
+//! | 4   | 2    | `kdbhfrre` | first free directory entry (−1 = none)     |
+//! | 6   | 2    | `kdbhfsbo` | free space begin offset                    |
+//! | 8   | 2    | `kdbhfseo` | free space end offset (= lowest row)       |
+//! | 10  | 2    | `kdbhavsp` | available space                            |
+//! | 12  | 2    | `kdbhtosp` | total space after commit                   |
+//!
+//! Then `kdbt[ntab]` (4 bytes each: first slot u16, row count u16) and
+//! `kdbr[nrow]` (u16 offsets, **relative to the start of `kdbh`**).
+//! Invariant: `fsbo == 14 + 4·ntab + 2·nrow`.
+//!
+//! **Where `kdbh` starts** differs between freelist (MSSM) blocks — right after
+//! the ITL array — and ASSM blocks, which have 8 more bytes first. Instead of
+//! trusting a flag, [`DataBlock::parse`] tries both and keeps the one whose
+//! header satisfies every structural invariant; if both or neither do, the
+//! block is rejected (no silent guess).
+
+// Offset arithmetic below combines a bounded base (kdbh offset <= 0x2C + 24*255 + 8)
+// with `u16`/`u8` header values, so every sum stays below 2^18 and cannot overflow
+// `usize`; every resulting offset is then bounds-checked by the `read_*` helpers.
+#![allow(clippy::arithmetic_side_effects)]
+
+use super::RowPiece;
+use super::ktb::Ktbbh;
+use super::piece::parse_piece;
+use crate::block::TAIL_LEN;
+use crate::bytes::{ByteOrder, read_u8, read_u16};
+use crate::error::{DecodeError, DecodeResult};
+
+const WHAT: &str = "kdbh";
+/// Size of `kdbh`.
+pub const KDBH_LEN: usize = 14;
+/// Extra bytes before `kdbh` on ASSM blocks (`lab-verify` LV-005).
+pub const ASSM_GAP: usize = 8;
+
+/// Parsed `kdbh`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Kdbh {
+    /// Flags.
+    pub flag: u8,
+    /// Number of tables in this block.
+    pub ntab: u8,
+    /// Number of row-directory entries.
+    pub nrow: u16,
+    /// First free directory entry (`0xFFFF` = none).
+    pub frre: u16,
+    /// Free space begin offset.
+    pub fsbo: u16,
+    /// Free space end offset.
+    pub fseo: u16,
+    /// Available space.
+    pub avsp: u16,
+    /// Total space.
+    pub tosp: u16,
+}
+
+/// One `kdbt` entry: the slots `first .. first + rows` belong to this table.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TableDir {
+    /// First row-directory slot of this table.
+    pub first: u16,
+    /// Number of slots.
+    pub rows: u16,
+}
+
+/// Where `kdbh` was found.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Layout {
+    /// Freelist-managed: directly after the ITL array.
+    Mssm,
+    /// Automatic segment space management: 8 bytes later.
+    Assm,
+}
+
+/// A row-directory slot.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Slot {
+    /// Points at row data at this block offset.
+    Row(usize),
+    /// Unused / free entry (offset outside the row heap).
+    Unused,
+}
+
+/// A validated table data block. Borrowing, zero-copy.
+#[derive(Debug, Clone)]
+pub struct DataBlock<'a> {
+    block: &'a [u8],
+    order: ByteOrder,
+    /// Transaction header.
+    pub ktb: Ktbbh,
+    /// Detected layout.
+    pub layout: Layout,
+    /// Block offset of `kdbh`.
+    pub kdbh_off: usize,
+    /// Data header.
+    pub kdbh: Kdbh,
+    /// Table directory.
+    pub tables: Vec<TableDir>,
+}
+
+impl<'a> DataBlock<'a> {
+    /// Parse and structurally validate a table data block (`type_kcbh == 0x06`,
+    /// already classified `Valid` by the scanner).
+    ///
+    /// # Errors
+    /// [`DecodeError::Malformed`] if no layout satisfies the invariants, or if
+    /// both do (ambiguous); [`DecodeError::Truncated`] for short blocks.
+    pub fn parse(block: &'a [u8], order: ByteOrder) -> DecodeResult<Self> {
+        let ktb = Ktbbh::parse(block, order)?;
+        let base = ktb.itl_end();
+        let mssm = Kdbh::parse_checked(block, order, base);
+        let assm = Kdbh::parse_checked(block, order, base.saturating_add(ASSM_GAP));
+        let (layout, kdbh_off, kdbh) = match (mssm, assm) {
+            (Ok(h), Err(_)) => (Layout::Mssm, base, h),
+            (Err(_), Ok(h)) => (Layout::Assm, base.saturating_add(ASSM_GAP), h),
+            (Ok(_), Ok(_)) => {
+                return Err(DecodeError::malformed(
+                    WHAT,
+                    base,
+                    "ambiguous MSSM/ASSM layout",
+                ));
+            }
+            (Err(e), Err(_)) => return Err(e),
+        };
+        let mut tables = Vec::with_capacity(usize::from(kdbh.ntab));
+        let mut expected_first = 0u16;
+        for t in 0..usize::from(kdbh.ntab) {
+            let o = kdbh_off + KDBH_LEN + 4 * t;
+            let td = TableDir {
+                first: read_u16(block, o, order)?,
+                rows: read_u16(block, o + 2, order)?,
+            };
+            let end = u32::from(td.first) + u32::from(td.rows);
+            if td.first != expected_first || end > u32::from(kdbh.nrow) {
+                return Err(DecodeError::malformed(
+                    "kdbt",
+                    o,
+                    "table directory inconsistent with nrow",
+                ));
+            }
+            expected_first = u16::try_from(end).unwrap_or(u16::MAX);
+            tables.push(td);
+        }
+        Ok(Self {
+            block,
+            order,
+            ktb,
+            layout,
+            kdbh_off,
+            kdbh,
+            tables,
+        })
+    }
+
+    /// Byte order of the block.
+    pub const fn order(&self) -> ByteOrder {
+        self.order
+    }
+
+    /// Read row-directory slot `i`.
+    ///
+    /// # Errors
+    /// [`DecodeError::Malformed`] if `i >= nrow`.
+    pub fn slot(&self, i: u16) -> DecodeResult<Slot> {
+        if i >= self.kdbh.nrow {
+            return Err(DecodeError::malformed("kdbr", 0, "slot index out of range"));
+        }
+        let dir = self.kdbh_off + KDBH_LEN + 4 * usize::from(self.kdbh.ntab);
+        let rel = read_u16(self.block, dir + 2 * usize::from(i), self.order)?;
+        let abs = self.kdbh_off + usize::from(rel);
+        let heap_start = self.kdbh_off + usize::from(self.kdbh.fseo);
+        let heap_end = self.block.len().saturating_sub(TAIL_LEN);
+        Ok(if (heap_start..heap_end).contains(&abs) {
+            Slot::Row(abs)
+        } else {
+            Slot::Unused
+        })
+    }
+
+    /// Decode the row piece in slot `i`. `None` for unused slots.
+    ///
+    /// # Errors
+    /// Any decoding error for that row only.
+    pub fn row(&self, i: u16) -> DecodeResult<Option<RowPiece<'a>>> {
+        match self.slot(i)? {
+            Slot::Unused => Ok(None),
+            Slot::Row(off) => {
+                let heap_end = self.block.len().saturating_sub(TAIL_LEN);
+                let heap = self.block.get(..heap_end).unwrap_or_default();
+                parse_piece(heap, off, i, self.order).map(Some)
+            }
+        }
+    }
+
+    /// Iterate all slots: `(slot, result)`; unused slots are skipped. An error
+    /// in one row never stops the iteration (REQ-001.4 applied to rows).
+    pub fn rows(&self) -> impl Iterator<Item = (u16, DecodeResult<RowPiece<'a>>)> + '_ {
+        (0..self.kdbh.nrow).filter_map(|i| match self.row(i) {
+            Ok(None) => None,
+            Ok(Some(p)) => Some((i, Ok(p))),
+            Err(e) => Some((i, Err(e))),
+        })
+    }
+}
+
+impl Kdbh {
+    /// Parse `kdbh` at `off` and check every invariant against the block.
+    fn parse_checked(block: &[u8], order: ByteOrder, off: usize) -> DecodeResult<Self> {
+        let h = Self {
+            flag: read_u8(block, off)?,
+            ntab: read_u8(block, off + 1)?,
+            nrow: read_u16(block, off + 2, order)?,
+            frre: read_u16(block, off + 4, order)?,
+            fsbo: read_u16(block, off + 6, order)?,
+            fseo: read_u16(block, off + 8, order)?,
+            avsp: read_u16(block, off + 10, order)?,
+            tosp: read_u16(block, off + 12, order)?,
+        };
+        let space = block.len().saturating_sub(TAIL_LEN).saturating_sub(off);
+        let dir_end = KDBH_LEN + 4 * usize::from(h.ntab) + 2 * usize::from(h.nrow);
+        let bad = |reason| Err(DecodeError::malformed(WHAT, off, reason));
+        if h.ntab == 0 {
+            return bad("ntab is zero");
+        }
+        if usize::from(h.fsbo) != dir_end {
+            return bad("fsbo != 14 + 4*ntab + 2*nrow");
+        }
+        if h.fseo < h.fsbo || usize::from(h.fseo) > space {
+            return bad("fseo outside [fsbo, block end]");
+        }
+        if usize::from(h.avsp) > space || usize::from(h.tosp) > space {
+            return bad("free space larger than block");
+        }
+        if h.frre != 0xFFFF && h.frre >= h.nrow {
+            return bad("free-list head outside row directory");
+        }
+        Ok(h)
+    }
+}

@@ -22,3 +22,9 @@ name = "classify_block"
 path = "fuzz_targets/classify_block.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "data_block"
+path = "fuzz_targets/data_block.rs"
+test = false
+doc = false
