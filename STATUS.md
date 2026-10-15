@@ -3,7 +3,7 @@ updated: 2026-10-15
 ---
 # الحالة الآن
 ## قيد العمل (سطر لكل وكيل — حدّثه بنفسك)
-- Lead — L-1 ✅ مدموج · L-2 الترميز ✅ · L-3 الأنواع ✅ · L-4 تجميع الصف ✅ (PR #6) · التالي L-6 القاموس (bootstrap$ ← obj$/tab$/col$) — `lead/dictionary`
+- Lead — L-1..L-4 ✅ · بحث الجولة 2 + صفوف cluster + ROWDEPENDENCIES ✅ (`lead/cluster-rowdep`) · التالي L-6 القاموس (kcvfhrdb ← bootstrap$ ← C_OBJ#/C_USER#) — `lead/dictionary`
 - Astra — Step 0 ثم Track L (المختبر) أو S1 (header probe) — `agent/astra` — ينتظر التشغيل
 ## معطّل / ينتظر
 - [2026-10-15] إجابات مقابلة خبير يمن سوفت (docs/research/02) — تحدد الأولويات: الإصدارات، الترميز العربي، ASM، الفدية
@@ -27,6 +27,8 @@ updated: 2026-10-15
 - استخدام أي كود أو ثنائيات من DUL.
 
 ## تم مؤخراً
+- [2026-10-15] بحث الجولة 2 (`docs/research/03`): 5 اكتشافات حرجة — ROWDEPENDENCIES كان سيزيح كل الأعمدة 6 بايت بصمت (أُصلح)؛ القاموس داخل clusters (دُعم)؛ الضغط مرفوض صراحةً؛ ADD COLUMN الافتراضي وحذف الصفوف مسجّلان لـ L-6/M7؛ LV-018..028
+- [2026-10-15] بحث الجولة 2 (`docs/research/03`، 13 مصدراً بالصينية والبرتغالية واليابانية والإنجليزية): اكتشاف أن ROWDEPENDENCIES يزحزح الأعمدة 6 بايت، وأن TAB$/COL$/USER$ داخل clusters، وفخ DEFAULT المُحسّن في 11g/12c ← تنفيذ صفوف cluster + dscn + رفض صريح للضغط؛ LV-018..024
 - [2026-10-15] الهيكل البرمجي v0.1: workspace (odr-core/odr-testkit/odr-cli)، عقود النواة (bytes/error/block/source)، فكّ NUMBER وDATE بدقة، مسح مرجعي، CI Windows+Linux، cargo-deny، fuzz؛ 15 اختباراً + 80k حالة خاصية — خضراء. ADR-0001 مقبول (Rust)، ADR-0005 معيار الجودة، ADR-0006 سير عمل 4 وكلاء
 - [2026-10-15] اعتماد هيكلية التوثيق (cortex-memory kit v0.3) ومعمارية + ADRs + متطلبات أولية
 - [2026-10-11] البحث التأسيسي + أسئلة مقابلة الخبير

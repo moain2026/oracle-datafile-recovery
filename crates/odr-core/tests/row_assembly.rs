@@ -47,6 +47,8 @@ fn view(slot: u16, e: &Entry) -> RowPiece<'_> {
         columns: e.1.iter().map(|c| c.as_deref()).collect(),
         next: e.2,
         head: None,
+        dscn: None,
+        cluster: None,
         len: 0,
     }
 }

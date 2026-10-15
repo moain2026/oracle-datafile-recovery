@@ -46,3 +46,9 @@ name = "value"
 path = "fuzz_targets/value.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "row_piece"
+path = "fuzz_targets/row_piece.rs"
+test = false
+doc = false

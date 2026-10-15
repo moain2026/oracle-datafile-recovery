@@ -7,16 +7,20 @@
 //! * Malformed directories/rows yield `Err` for that row only, never for the
 //!   whole block.
 
+use crate::block::Scn;
 use serde::{Deserialize, Serialize};
 
 pub mod assemble;
+pub mod cluster;
 pub mod kdb;
 pub mod ktb;
 pub mod piece;
 
 pub use assemble::{AssembleError, AssembledRow, PieceSource, assemble};
-pub use kdb::{DataBlock, Layout, Slot};
+pub use cluster::{ClusterPart, cluster_columns};
+pub use kdb::{DataBlock, Layout, Slot, kdbh_flag};
 pub use ktb::data_object_id;
+pub use piece::PieceFormat;
 
 /// Row-piece flag bits (`flag` byte, \[O1\], \[W6\]).
 pub mod flag {
@@ -53,6 +57,11 @@ pub struct RowPiece<'a> {
     pub next: Option<(u32, u16)>,
     /// Head-piece pointer on the destination piece of a migrated row.
     pub head: Option<(u32, u16)>,
+    /// Row-dependency SCN (`ROWDEPENDENCIES` tables only; zero while the
+    /// commit SCN is still held by the ITL).
+    pub dscn: Option<Scn>,
+    /// Cluster header for indexed-cluster key / member rows.
+    pub cluster: Option<cluster::ClusterPart>,
     /// Total encoded length of the piece in bytes.
     pub len: usize,
 }
@@ -65,6 +74,14 @@ impl RowPiece<'_> {
     /// Whether this piece is the head of the row (flag `H`).
     pub const fn is_head(&self) -> bool {
         self.flag & flag::H != 0
+    }
+    /// Whether this is a cluster-key row (flag `K`).
+    pub const fn is_cluster_key(&self) -> bool {
+        self.flag & flag::K != 0
+    }
+    /// Whether this is a cluster member row (flag `C`).
+    pub const fn is_cluster_member(&self) -> bool {
+        self.flag & flag::C != 0
     }
     /// Whether the row is complete in this single piece (`H`, `F` and `L`).
     pub const fn is_complete(&self) -> bool {
