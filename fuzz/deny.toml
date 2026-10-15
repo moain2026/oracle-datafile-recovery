@@ -1,0 +1,33 @@
+# Fuzz-only licence policy (issue #9). The fuzz harness is never shipped to
+# customers; the product policy (../deny.toml) is NOT weakened.
+# libfuzzer-sys bundles LLVM libFuzzer: "(MIT OR Apache-2.0) AND NCSA".
+# NCSA (University of Illinois/NCSA Open Source License) is permissive,
+# BSD-style, non-copyleft, and is allowed here only for that crate.
+# Run: (cd fuzz && cargo deny check)   — picks up this file automatically.
+[graph]
+all-features = false
+
+[licenses]
+allow = ["MIT", "Apache-2.0", "Apache-2.0 WITH LLVM-exception", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Unicode-3.0"]
+confidence-threshold = 0.93
+[[licenses.exceptions]]
+crate = "odr-fuzz"
+allow = ["LicenseRef-Proprietary"]
+[[licenses.exceptions]]
+crate = "odr-core"
+allow = ["LicenseRef-Proprietary"]
+[[licenses.exceptions]]
+crate = "libfuzzer-sys"
+allow = ["NCSA"]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[advisories]
+yanked = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
