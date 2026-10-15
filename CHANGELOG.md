@@ -1,0 +1,14 @@
+# Changelog
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+## [Unreleased]
+### Added
+- Cargo workspace (Rust 1.99, edition 2024): `odr-core` (bounds-checked `Cursor`/`ByteOrder`, `kcbh` + XOR checksum + tail check + `classify`, read-only `Evidence` with SHA-256, exact `NUMBER` and `DATE` decoders, reference scanner, row contracts), `odr-testkit` (synthetic blocks + deterministic corruption), `odr-cli` (`odr scan`, text/JSON, exit codes).
+- Strict lints (`unsafe` forbidden, indexing/unwrap/panic denied), CI on Windows + Linux (`ci/github-ci.yml`, enable per `ci/README.md`), `cargo deny`, fuzz targets, property tests.
+- ADR-0005 engineering quality bar, ADR-0006 multi-agent workflow (amended: Lead + Astra), briefs `docs/agents/{README,ASTRA,LEAD}.md`, `docs/design/lab-verify.md`.
+### Changed
+- ADR-0001 accepted (Rust, Windows-first static build).
+- طقم التوثيق (هيكلية cortex-memory v0.3): AGENTS/CLAUDE/STATUS/LESSONS/CONTRIBUTING/SECURITY/LICENSE، قوالب ADR/design/requirements/runbooks/postmortems، قالب PR.
+- `docs/design/architecture.md` (C4)، ADR-0001..0004، REQ-001..003.
+## [0.0.1] - 2026-10-11
+### Added
+- البحث التأسيسي وأسئلة مقابلة الخبير.

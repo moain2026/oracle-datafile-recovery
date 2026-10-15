@@ -5,3 +5,10 @@ __pycache__/
 target/
 node_modules/
 .env
+*.ora
+*.ctl
+*.arc
+/lab/data/
+/out/
+/evidence/
+*.parquet
