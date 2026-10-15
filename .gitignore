@@ -13,3 +13,4 @@ node_modules/
 /evidence/
 *.parquet
 /fuzz/Cargo.lock
+/lab/out/

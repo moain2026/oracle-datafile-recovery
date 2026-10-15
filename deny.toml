@@ -13,6 +13,9 @@ allow = ["LicenseRef-Proprietary"]
 crate = "odr-cli"
 allow = ["LicenseRef-Proprietary"]
 [[licenses.exceptions]]
+crate = "odr-corrupt"
+allow = ["LicenseRef-Proprietary"]
+[[licenses.exceptions]]
 crate = "odr-testkit"
 allow = ["LicenseRef-Proprietary"]
 

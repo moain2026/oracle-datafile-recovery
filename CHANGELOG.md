@@ -2,6 +2,9 @@
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 ## [Unreleased]
 ### Added
+- `odr-corrupt` crate + CLI: deterministic, manifest-backed corruption of datafile copies (bitrot, torn, zero, ransom, wipe-header, truncate, swap, holes, forge); property test that the manifest covers the exact diff.
+- `lab/`: Oracle Free 26ai golden-corpus lab (tablespaces ASSM/MSSM/bigfile, deterministic corpus incl. Arabic/cluster/rowdep/chained/fast-add-column, `DUMP 1016` truth export, block dumps, datafile copies after shutdown + dbv), `lab.sh`/`lab.ps1`, README.
+- Docs: handover memo + next-agent prompt, research 04 (field input, versions, DMP), REQ-004 (partial-damage extraction), Arabic project brief.
 - Cargo workspace (Rust 1.99, edition 2024): `odr-core` (bounds-checked `Cursor`/`ByteOrder`, `kcbh` + XOR checksum + tail check + `classify`, read-only `Evidence` with SHA-256, exact `NUMBER` and `DATE` decoders, reference scanner, row contracts), `odr-testkit` (synthetic blocks + deterministic corruption), `odr-cli` (`odr scan`, text/JSON, exit codes).
 - Strict lints (`unsafe` forbidden, indexing/unwrap/panic denied), CI on Windows + Linux (`ci/github-ci.yml`, enable per `ci/README.md`), `cargo deny`, fuzz targets, property tests.
 - ADR-0005 engineering quality bar, ADR-0006 multi-agent workflow (amended: Lead + Astra), briefs `docs/agents/{README,ASTRA,LEAD}.md`, `docs/design/lab-verify.md`.

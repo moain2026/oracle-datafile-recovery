@@ -3,6 +3,7 @@ updated: 2026-10-15
 ---
 # الحالة الآن
 ## قيد العمل (سطر لكل وكيل — حدّثه بنفسك)
+- **Lead (2026-10-15، تسليم):** دُمج: مختبر `lab/` + `odr-corrupt` + REQ-004 + وثائق التسليم. **محجوب:** المختبر يحتاج جهاز المالك (Windows+Docker) أو VPS. الوكيل التالي يبدأ من `docs/handover/NEXT_AGENT_PROMPT.md`. PR #10 (Astra) = طلب تعديلات B1–B4. Issue #8 = تفعيل CI من المالك.
 - Lead — L-1..L-4b ✅ · مراجعة S1a (#10: تعديلات مطلوبة) · L-6a bootstrap$ ✅ · التالي L-6b: كتل bootstrap$ من kcvfhrdb + OBJ$/TAB$/COL$ — `lead/dictionary`
 - Astra — S1a PR #10: مراجعة Lead = تعديلات مطلوبة (B1 فصل التخطيط عن الإزاحة، B2 bigfile، B3 أغلبية بدل veto، B4 عتبة على الكتل الصالحة) — `genspark_ai_developer`
 ## معطّل / ينتظر
