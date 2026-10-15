@@ -55,6 +55,6 @@ jobs:
       - run: cargo install cargo-fuzz --locked
       - run: |
           cd fuzz
-          for t in decode_number classify_block; do
+          for t in decode_number classify_block data_block; do
             cargo +nightly fuzz run "$t" -- -max_total_time=60
           done

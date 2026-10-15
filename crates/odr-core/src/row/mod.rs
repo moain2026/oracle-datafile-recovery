@@ -9,6 +9,13 @@
 
 use serde::{Deserialize, Serialize};
 
+pub mod kdb;
+pub mod ktb;
+pub mod piece;
+
+pub use kdb::{DataBlock, Layout, Slot};
+pub use ktb::data_object_id;
+
 /// Row-piece flag bits (`flag` byte, \[O1\], \[W6\]).
 pub mod flag {
     /// Cluster key.
@@ -42,6 +49,25 @@ pub struct RowPiece<'a> {
     pub columns: Vec<Option<&'a [u8]>>,
     /// Next-piece pointer (rdba, slot) when the row continues elsewhere.
     pub next: Option<(u32, u16)>,
+    /// Head-piece pointer on the destination piece of a migrated row.
+    pub head: Option<(u32, u16)>,
+    /// Total encoded length of the piece in bytes.
+    pub len: usize,
+}
+
+impl RowPiece<'_> {
+    /// Whether the row was deleted (flag `D`).
+    pub const fn is_deleted(&self) -> bool {
+        self.flag & flag::D != 0
+    }
+    /// Whether this piece is the head of the row (flag `H`).
+    pub const fn is_head(&self) -> bool {
+        self.flag & flag::H != 0
+    }
+    /// Whether the row is complete in this single piece (`H`, `F` and `L`).
+    pub const fn is_complete(&self) -> bool {
+        self.flag & (flag::H | flag::F | flag::L) == flag::H | flag::F | flag::L
+    }
 }
 
 /// Provenance of an extracted row (REQ-003.4).
