@@ -28,3 +28,9 @@ name = "data_block"
 path = "fuzz_targets/data_block.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "charset"
+path = "fuzz_targets/charset.rs"
+test = false
+doc = false

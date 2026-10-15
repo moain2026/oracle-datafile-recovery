@@ -15,6 +15,7 @@
 
 pub mod block;
 pub mod bytes;
+pub mod charset;
 pub mod error;
 pub mod row;
 pub mod scan;

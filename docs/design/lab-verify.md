@@ -13,3 +13,5 @@
 | LV-008 | `row/piece.rs` | nrid (dba 4 + slot 2، بترتيب الملف) موجود iff لم يُرفع العلم L | Lewis [W6] | ⬜ |
 | LV-009 | `row/piece.rs` | الطول الطويل `0xFE` + u16 **big-endian** على كل المنصات | oradul [G1] | ⬜ |
 | LV-010 | `row/piece.rs` | قطعة الوجهة لصف مهاجر قد تحمل hrid — غير مدعوم بعد | Lewis [W6] | ⬜ |
+| LV-011 | `charset/mod.rs` | معرّفات NLS_CHARSET_ID: 1/31/51/178/560/871/873/2000 | Oracle Globalization Guide | ⬜ |
+| LV-012 | `charset/mod.rs` | تحويل أوراكل لـ AR8MSWIN1256 يطابق جدول Microsoft cp1256 بايتاً بايتاً (0x80–0xFF) | unicode.org + WHATWG + Python | ⬜ يحتاج جدولاً بكل البايتات في المختبر |
