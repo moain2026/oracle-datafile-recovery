@@ -34,3 +34,9 @@ name = "charset"
 path = "fuzz_targets/charset.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "types"
+path = "fuzz_targets/types.rs"
+test = false
+doc = false
