@@ -12,3 +12,4 @@ node_modules/
 /out/
 /evidence/
 *.parquet
+/fuzz/Cargo.lock

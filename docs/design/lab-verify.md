@@ -20,3 +20,23 @@
 | LV-015 | `types/interval.rs` | INTERVAL: حقول big-endian بانحياز 0x80000000 للـ u32 و60 للبايت | OCI \[O2\] | ⬜ |
 | LV-016 | `types/binary_float.rs` | BINARY_FLOAT/DOUBLE: IEEE big-endian؛ موجب ← رفع بت الإشارة، سالب ← قلب كل البتات | Dyke \[W2\] | ⬜ |
 | LV-017 | `types/rowid.rs` | ROWID الممتد 10 بايت big-endian: objd·rdba·slot؛ النص base64 بأبجدية A–Z a–z 0–9 + / | Concepts \[O1\] | ⬜ |
+| LV-018 | `row/kdb.rs` | بت `kdbhflag` ‏0x20 (`flag=--R-----`) ⇔ ROWDEPENDENCIES؛ 0x40 (`-0------`) ⇔ مضغوطة (9ir2)؛ 0x01 (`-------K`) غير موثوق للـ cluster | R4، R10، R2 مقابل R1/R3 (`docs/research/03`) | ⬜ |
+| LV-019 | `row/piece.rs` | `dscn` = wrap u16 + base u32 بترتيب الملف، مباشرة بعد `cc` في القطع الكاملة `H F L`؛ موضعه مع nrid/hrid **غير معروف** ⇒ `Unsupported` | R4 (`tl: 12`) | ⬜ يحتاج صفاً متسلسلاً ومهاجراً بـ ROWDEPENDENCIES في المختبر |
+| LV-020 | `row/cluster.rs` | صف مفتاح cluster: `flag lock cc curc(u16) comc(u16) prev(6) next(6)` ثم أعمدة المفتاح، بترتيب الملف؛ القطع المتسلسلة غير معروفة ⇒ `Unsupported` | R1، R2 (BBED بالإزاحات، `tl: 22`) | ⬜ |
+| LV-021 | `row/cluster.rs` | صف عضو: `flag lock cc cki(u8)` ثم أعمدة الجدول **بدون** أعمدة المفتاح؛ `cki` فهرس داخل `kdbt[0]`؛ ترتيب المقطع = المفتاح ثم العضو؛ العضو المحذوف `cc: 0` | R1، R2، R3 (`tl: 20/35/4`) | ⬜ يحتاج cluster بمفتاح من عمودين آخرهما NULL |
+| LV-022 | `row/kdb.rs` | الكتلة المضغوطة: `ntab ≥ 2` و`fsbo` أكبر من `14+4·ntab+2·nrow` (حقول 9ir2، 34 بايت في المثال المنشور) | R10 | ⬜ |
+| LV-023 | L-6 (قادم) | `kcvfhrdb` @96 في كتلة 1 لملف 1 = rdba رأس مقطع `bootstrap$`؛ نسبي للـ PDB في 12c+ | R5، R12 | ⬜ |
+| LV-024 | L-6 (قادم) | `COL$.PROPERTY & 0x40000000` = عمود أضيف بـ DEFAULT دون تحديث الصفوف؛ ‏12c: متجه `SYS_NC…$` و`SYS_OP_VECBIT` | R8، R9 | ⬜ يجب اختباره قبل دمج L-6 |
+| LV-018 | `row/kdb.rs` `kdbh_flag` | `kdbhflag` 0x20 = ROWDEPENDENCIES (`--R-----`)؛ 0x40 = مضغوط (`-0------`)؛ 0x01 (`-------K`) غير موثوق لكتل cluster | تفريغات aliyun 2012، CSDN، zhizuobiao \[R2\] | ⬜ |
+| LV-019 | `row/piece.rs` | مع ROWDEPENDENCIES: `dscn` = wrap u16 + base u32 بترتيب الملف، مباشرة بعد `cc` (قبل nrid؟ غير منشور ← Unsupported) | aliyun 2012 (BBED + `tl: 12`) \[R2\] | ⬜ |
+| LV-020 | `row/cluster.rs` | صف مفتاح: curc u16، comc u16، prev rid 6، next rid 6 ثم أعمدة المفتاح؛ ترتيب الملف | itpub 2020، zhizuobiao 2018، chinaunix (`tl: 22`) \[R2\] | ⬜ |
+| LV-021 | `row/cluster.rs` | صف عضو: `cki` بايت واحد = فهرس داخل `kdbt[0]`؛ لا يخزّن أعمدة المفتاح؛ ترتيب المقطع = المفتاح ثم العضو؛ `kdbt[t]` = `TAB$.TAB#` | itpub 2020، zhizuobiao (`tl: 20/35`) \[R2\] | ⬜ |
+| LV-022 | `row/kdb.rs` | الكتل المضغوطة: `ntab ≥ 2` وحقول 9ir2 تكسر `fsbo = 14+4·ntab+2·nrow` | CSDN (`fsbo=0x5b0`, nrow 700) \[R2\] | ⬜ |
+| LV-023 | L-6 (مستقبلي) | ADD COLUMN المُحسَّن: `COL$.PROPERTY & 0x40000000`؛ الصفوف القديمة بلا العمود ← القيمة الافتراضية؛ 12c: عمود `SYS_NC…$` bit-vector | StackOverflow 32847399، Tencent 114456101 \[R2\] | ⬜ |
+| LV-024 | `row/piece.rs` | الحذف يرفع `D` فقط (0x2C→0x3C) والأعمدة باقية؛ عضو cluster محذوف `cc = 0` | orasos 2012، zhizuobiao \[R2\] | ⬜ |
+| LV-025 | L-6 / S1 | `kcvfhrdb` @96 في ملف 1 كتلة 1 = rdba رأس مقطع bootstrap$ | orasos، atoracle.cn، tomcoding 2017 \[R2\] | ⬜ |
+| LV-026 | L-6 | 12c CDB: bootstrap$ لكل PDB؛ rdba نسبي (relfile# من 1)؛ `container$` | orasos (DUL 12c) \[R2\] | ⬜ |
+| LV-027 | L-6 | obj#/dataobj#/tab# الثابتة للجداول الأساسية (OBJ$ 18؛ C_OBJ# 2: TAB$ 1، IND$ 3، ICOL$ 4، COL$ 5، LOB$ 6، COLTYPE$ 7؛ C_USER# 10؛ C_TS# 6 (TS$ tab 2)؛ UNDO$ 15) | DUL output، tomcoding \[R2\] | ⬜ لكل إصدار |
+| LV-028 | S1 `header.rs` | خريطة kcvfh (انظر \[R2\] §2)؛ ما بعد @140 يختلف بالإصدار | atoracle.cn \[R2\] | ⬜ لكل إصدار |
+
+\[R2\] = `docs/research/03_deep_research_round2_ar.md`.

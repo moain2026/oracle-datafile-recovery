@@ -17,6 +17,12 @@
 //! `kdbr[nrow]` (u16 offsets, **relative to the start of `kdbh`**).
 //! Invariant: `fsbo == 14 + 4·ntab + 2·nrow`.
 //!
+//! `kdbhflag` bits that change how the block must be read are in
+//! [`kdbh_flag`]. Compressed blocks (basic / OLTP, bit `0x40`) insert extra
+//! `9ir2` header fields before `kdbt` and store rows as symbol-table
+//! references; they are reported as [`DecodeError::Unsupported`] — decoding
+//! them as plain rows would produce wrong values.
+//!
 //! **Where `kdbh` starts** differs between freelist (MSSM) blocks — right after
 //! the ITL array — and ASSM blocks, which have 8 more bytes first. Instead of
 //! trusting a flag, [`DataBlock::parse`] tries both and keeps the one whose
@@ -30,7 +36,7 @@
 
 use super::RowPiece;
 use super::ktb::Ktbbh;
-use super::piece::parse_piece;
+use super::piece::{PieceFormat, parse_piece};
 use crate::block::TAIL_LEN;
 use crate::bytes::{ByteOrder, read_u8, read_u16};
 use crate::error::{DecodeError, DecodeResult};
@@ -40,6 +46,19 @@ const WHAT: &str = "kdbh";
 pub const KDBH_LEN: usize = 14;
 /// Extra bytes before `kdbh` on ASSM blocks (`lab-verify` LV-005).
 pub const ASSM_GAP: usize = 8;
+
+/// `kdbhflag` bits (block dumps print them as `76543210` / `flag=…`).
+/// `lab-verify` LV-018/022.
+pub mod kdbh_flag {
+    /// `flag=-0------`: compressed block (basic or OLTP) with a symbol table
+    /// in `kdbt[0]` and `9ir2` header extensions.
+    pub const COMPRESSED: u8 = 0x40;
+    /// `flag=--R-----`: rows carry a 6-byte dependency SCN (`ROWDEPENDENCIES`).
+    pub const ROW_DEPENDENCIES: u8 = 0x20;
+    /// `flag=-------K`: cluster block. **Not reliable** — published dumps of
+    /// cluster blocks show it both set and clear; use `ntab` and row flags.
+    pub const CLUSTER: u8 = 0x01;
+}
 
 /// Parsed `kdbh`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -128,7 +147,9 @@ impl<'a> DataBlock<'a> {
                     "ambiguous MSSM/ASSM layout",
                 ));
             }
-            (Err(e), Err(_)) => return Err(e),
+            // Prefer the more specific diagnosis when one candidate is a
+            // recognised-but-unsupported format (both are errors either way).
+            (Err(e @ DecodeError::Unsupported(_)), Err(_)) | (Err(_), Err(e)) => return Err(e),
         };
         let mut tables = Vec::with_capacity(usize::from(kdbh.ntab));
         let mut expected_first = 0u16;
@@ -165,6 +186,43 @@ impl<'a> DataBlock<'a> {
         self.order
     }
 
+    /// Row-piece layout implied by the block header.
+    pub const fn piece_format(&self) -> PieceFormat {
+        PieceFormat {
+            row_dependencies: self.kdbh.flag & kdbh_flag::ROW_DEPENDENCIES != 0,
+        }
+    }
+
+    /// Index into [`Self::tables`] of the table that owns slot `i`, or `None`
+    /// if no `kdbt` entry covers it. In a cluster block table 0 is the key
+    /// table and table `t ≥ 1` has `TAB$.TAB# == t`.
+    pub fn table_of(&self, i: u16) -> Option<usize> {
+        self.tables
+            .iter()
+            .position(|t| i >= t.first && u32::from(i) < u32::from(t.first) + u32::from(t.rows))
+    }
+
+    /// The cluster-key row a member row refers to (`cki` indexes `kdbt[0]`).
+    ///
+    /// # Errors
+    /// [`DecodeError::Malformed`] if `key_index` is outside `kdbt[0]` or the
+    /// slot is unused; any decoding error of the key row.
+    pub fn cluster_key(&self, key_index: u8) -> DecodeResult<RowPiece<'a>> {
+        let bad = |reason| Err(DecodeError::malformed("cluster key", 0, reason));
+        let Some(keys) = self.tables.first() else {
+            return bad("block has no table directory");
+        };
+        if u16::from(key_index) >= keys.rows {
+            return bad("cki outside kdbt[0]");
+        }
+        let slot = keys.first.saturating_add(u16::from(key_index));
+        match self.row(slot)? {
+            Some(p) if p.is_cluster_key() => Ok(p),
+            Some(_) => bad("cki slot is not a cluster-key row"),
+            None => bad("cki slot is unused"),
+        }
+    }
+
     /// Read row-directory slot `i`.
     ///
     /// # Errors
@@ -195,7 +253,7 @@ impl<'a> DataBlock<'a> {
             Slot::Row(off) => {
                 let heap_end = self.block.len().saturating_sub(TAIL_LEN);
                 let heap = self.block.get(..heap_end).unwrap_or_default();
-                parse_piece(heap, off, i, self.order).map(Some)
+                parse_piece(heap, off, i, self.order, self.piece_format()).map(Some)
             }
         }
     }
@@ -227,6 +285,12 @@ impl Kdbh {
         let space = block.len().saturating_sub(TAIL_LEN).saturating_sub(off);
         let dir_end = KDBH_LEN + 4 * usize::from(h.ntab) + 2 * usize::from(h.nrow);
         let bad = |reason| Err(DecodeError::malformed(WHAT, off, reason));
+        // Compressed blocks always have ntab >= 2 (symbol table + data) and
+        // fail the fsbo invariant below (their header is longer), so they can
+        // never be mis-read as plain rows; this only sharpens the diagnosis.
+        if h.flag & kdbh_flag::COMPRESSED != 0 && h.ntab >= 2 {
+            return Err(DecodeError::Unsupported("compressed data block (9ir2)"));
+        }
         if h.ntab == 0 {
             return bad("ntab is zero");
         }
