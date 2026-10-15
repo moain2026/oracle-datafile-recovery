@@ -9,6 +9,10 @@
 //! internals (parallel chunks, header probe, block-size/endian inference)
 //! without changing the public types.
 
+// Temporary additive export within Astra ownership; root export awaits issue #6.
+#[path = "header.rs"]
+pub mod header;
+
 use crate::block::{BlockHeader, BlockStatus, classify};
 use crate::bytes::ByteOrder;
 use serde::{Deserialize, Serialize};

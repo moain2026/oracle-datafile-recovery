@@ -1,0 +1,326 @@
+{
+  "schema": "odr.bench.header-probe/1",
+  "date": "2026-10-15",
+  "measured_git_revision": "a3fb5bb1977265b5ba0b355992351ae6d414534c",
+  "command": "cargo bench --manifest-path bench/header-probe/Cargo.toml --locked",
+  "rustc": "rustc 1.99.0 (b940084d7 2026-09-28)",
+  "cpu_lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               GenuineIntel\nModel name:                              Intel(R) Xeon(R) Processor @ 2.50GHz\nCPU family:                              6\nModel:                                   85\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                7\nBogoMIPS:                                4988.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault invpcid_single ssbd ibrs ibpb stibp ibrs_enhanced fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid mpx avx512f avx512dq rdseed adx smap clflushopt clwb avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves arat umip pku ospke avx512_vnni md_clear arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                35.8 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Indirect target selection: Mitigation; Aligned branch/return thunks\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Mitigation; Clear CPU buffers; SMT Host state unknown\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Mitigation; TSX disabled\nVulnerability Vmscape:                   Not affected\n",
+  "os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+  "kernel": "6.1.155",
+  "logical_cpus": 4,
+  "reported_cores": 2,
+  "threads_used": 1,
+  "input_bytes": 1048576,
+  "block_size": 8192,
+  "byte_order": "Little",
+  "seed": 71,
+  "cache": "warm resident synthetic Vec; not a disk benchmark",
+  "cold_cache": "not measured; no disk I/O in either timed operation",
+  "warmup_seconds": 2,
+  "measurement_seconds": 5,
+  "samples": 40,
+  "baseline_comparison": "Not comparable to Lead 14.0 s / 1 GiB end-to-end baseline: no file I/O or SHA-256 in these timings. Inference evaluates ten hypotheses; reference scan evaluates one.",
+  "results": {
+    "infer_ten_hypotheses": {
+      "median_ns": 390137.31481481483,
+      "median_95pct_ci_ns": [
+        385175.87854217854,
+        399539.86315453384
+      ],
+      "normalized_input_MB_per_second": 2687.71009637395,
+      "normalized_input_MB_per_second_95pct_ci": [
+        2624.4590257429013,
+        2722.330390907841
+      ],
+      "criterion_estimates": {
+        "mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 387227.60919116694,
+            "upper_bound": 402557.086795097
+          },
+          "point_estimate": 394625.9515067686,
+          "standard_error": 3915.4748506492447
+        },
+        "median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 385175.87854217854,
+            "upper_bound": 399539.86315453384
+          },
+          "point_estimate": 390137.31481481483,
+          "standard_error": 4066.1332245493954
+        },
+        "median_abs_dev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 13184.11110460191,
+            "upper_bound": 35706.14195873638
+          },
+          "point_estimate": 25334.857576795308,
+          "standard_error": 5296.372196674953
+        },
+        "slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 392547.46168103465,
+            "upper_bound": 411405.69200474175
+          },
+          "point_estimate": 401607.96606744954,
+          "standard_error": 4831.513861123628
+        },
+        "std_dev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 18517.615665220885,
+            "upper_bound": 29882.972526582744
+          },
+          "point_estimate": 25056.85614741561,
+          "standard_error": 2909.119994896807
+        }
+      },
+      "criterion_samples": {
+        "sampling_mode": "Linear",
+        "iters": [
+          15.0,
+          30.0,
+          45.0,
+          60.0,
+          75.0,
+          90.0,
+          105.0,
+          120.0,
+          135.0,
+          150.0,
+          165.0,
+          180.0,
+          195.0,
+          210.0,
+          225.0,
+          240.0,
+          255.0,
+          270.0,
+          285.0,
+          300.0,
+          315.0,
+          330.0,
+          345.0,
+          360.0,
+          375.0,
+          390.0,
+          405.0,
+          420.0,
+          435.0,
+          450.0,
+          465.0,
+          480.0,
+          495.0,
+          510.0,
+          525.0,
+          540.0,
+          555.0,
+          570.0,
+          585.0,
+          600.0
+        ],
+        "times": [
+          5851554.0,
+          10875749.0,
+          16397507.0,
+          22385523.0,
+          33107620.0,
+          32874802.0,
+          38922399.0,
+          44644197.0,
+          49985237.0,
+          60282024.0,
+          60939935.0,
+          78293068.0,
+          76822577.0,
+          83081436.0,
+          83543129.0,
+          88619194.0,
+          103467881.0,
+          99995842.0,
+          112016972.0,
+          111152058.0,
+          127705145.0,
+          127529634.0,
+          138250070.0,
+          146774104.0,
+          145495898.0,
+          151348827.0,
+          158019267.0,
+          182905210.0,
+          174060644.0,
+          200933905.0,
+          212985814.0,
+          213588493.0,
+          192081831.0,
+          203120221.0,
+          203504719.0,
+          215427770.0,
+          213063568.0,
+          232142934.0,
+          239796960.0,
+          224164699.0
+        ]
+      }
+    },
+    "scan_reference_one_hypothesis": {
+      "median_ns": 32331.09663937641,
+      "median_95pct_ci_ns": [
+        32267.51732417258,
+        32490.19510262196
+      ],
+      "normalized_input_MB_per_second": 32432.42911602718,
+      "normalized_input_MB_per_second_95pct_ci": [
+        32273.613522110856,
+        32496.33337035446
+      ],
+      "criterion_estimates": {
+        "mean": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 32329.442214677507,
+            "upper_bound": 32562.627541718906
+          },
+          "point_estimate": 32431.40034912231,
+          "standard_error": 59.91010450306228
+        },
+        "median": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 32267.51732417258,
+            "upper_bound": 32490.19510262196
+          },
+          "point_estimate": 32331.09663937641,
+          "standard_error": 52.80095027775823
+        },
+        "median_abs_dev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 119.86675813307414,
+            "upper_bound": 294.458443078343
+          },
+          "point_estimate": 218.69260026281805,
+          "standard_error": 47.40204951011933
+        },
+        "slope": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 32362.523740014112,
+            "upper_bound": 32522.415049929994
+          },
+          "point_estimate": 32445.173998635375,
+          "standard_error": 40.8291614337332
+        },
+        "std_dev": {
+          "confidence_interval": {
+            "confidence_level": 0.95,
+            "lower_bound": 181.74353612639953,
+            "upper_bound": 583.7927558050055
+          },
+          "point_estimate": 383.71304860308766,
+          "standard_error": 121.16244011204405
+        }
+      },
+      "criterion_samples": {
+        "sampling_mode": "Linear",
+        "iters": [
+          188.0,
+          376.0,
+          564.0,
+          752.0,
+          940.0,
+          1128.0,
+          1316.0,
+          1504.0,
+          1692.0,
+          1880.0,
+          2068.0,
+          2256.0,
+          2444.0,
+          2632.0,
+          2820.0,
+          3008.0,
+          3196.0,
+          3384.0,
+          3572.0,
+          3760.0,
+          3948.0,
+          4136.0,
+          4324.0,
+          4512.0,
+          4700.0,
+          4888.0,
+          5076.0,
+          5264.0,
+          5452.0,
+          5640.0,
+          5828.0,
+          6016.0,
+          6204.0,
+          6392.0,
+          6580.0,
+          6768.0,
+          6956.0,
+          7144.0,
+          7332.0,
+          7520.0
+        ],
+        "times": [
+          6163641.0,
+          12243999.0,
+          17940921.0,
+          25837825.0,
+          30235016.0,
+          36554305.0,
+          42550180.0,
+          48265708.0,
+          54599147.0,
+          60559011.0,
+          66806193.0,
+          72703366.0,
+          79503597.0,
+          84819297.0,
+          91722110.0,
+          96755756.0,
+          104137780.0,
+          109401096.0,
+          115056892.0,
+          121817938.0,
+          127995320.0,
+          133506391.0,
+          142203989.0,
+          145378289.0,
+          151225477.0,
+          157043525.0,
+          163693783.0,
+          170073875.0,
+          177475072.0,
+          185495418.0,
+          188414751.0,
+          194112468.0,
+          201690455.0,
+          208403480.0,
+          212974583.0,
+          219761330.0,
+          224133215.0,
+          233656273.0,
+          239125062.0,
+          244860383.0
+        ]
+      }
+    }
+  },
+  "measured_source_sha256": {
+    "crates/odr-core/src/header.rs": "ec472583ed3d74ae2756c97cf3c4eb322b4a9d7329036fcdc5521624fd23c3d7",
+    "crates/odr-core/src/block.rs": "c5a4b23fc5fb96f0b8214a1b2db1eef2ce82060f097b2aef56be895c6cf488bf",
+    "crates/odr-core/src/scan.rs": "3f23f0627d4423d8e8cd1f09d0e16c686425b47a80c3b8daf7a7096d3d148ba5",
+    "crates/odr-testkit/src/lib.rs": "ef6fd2b82a274f5cdb6fb79d8a174c961443eb97cc8c5cf600d736a9bc1a14b0",
+    "bench/header-probe/benches/inference.rs": "b54c1c630454c7dc3ca2f6d9d6c566ef018e96df7adea2311473be4ebb33d1cb",
+    "bench/header-probe/Cargo.lock": "1dfadba20afe71d7abc4310c23e7482ea8949593edfb8febd9646c41252a443c"
+  },
+  "revision_note": "Pre-squash measurement revision; source hashes survive review-commit squashing."
+}

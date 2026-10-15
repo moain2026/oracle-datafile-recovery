@@ -1,0 +1,27 @@
+[package]
+name = "odr-header-probe-bench"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+publish = false
+license = "LicenseRef-Proprietary"
+
+# Isolated benchmark workspace: no change to Lead-owned root manifests.
+[workspace]
+
+# Regular dependencies ensure standalone dependency audits include the harness.
+[dependencies]
+criterion = { version = "0.7", default-features = false }
+odr-core = { path = "../../crates/odr-core" }
+odr-testkit = { path = "../../crates/odr-testkit" }
+
+[[bench]]
+name = "inference"
+harness = false
+
+[profile.bench]
+lto = "fat"
+codegen-units = 1
+
+[lints.rust]
+unsafe_code = "forbid"

@@ -46,3 +46,9 @@ name = "value"
 path = "fuzz_targets/value.rs"
 test = false
 doc = false
+
+[[bin]]
+name = "header_inference"
+path = "fuzz_targets/header_inference.rs"
+test = false
+doc = false

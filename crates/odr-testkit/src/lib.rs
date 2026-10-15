@@ -10,7 +10,9 @@
     clippy::cast_possible_truncation
 )]
 
-use odr_core::ByteOrder;
+// Re-export the builder's input type for core unit tests: the dev-dependency
+// cycle compiles odr-core as both a library and a distinct unit-test crate.
+pub use odr_core::ByteOrder;
 use odr_core::block::{FLG_CHECKSUM, KCBH_LEN, TAIL_LEN, xor_fold};
 
 /// Build a synthetic block with a valid header, tail and checksum.
