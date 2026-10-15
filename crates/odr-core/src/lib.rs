@@ -10,12 +10,13 @@
 //! * Source files are never written to (see [`source`]).
 //!
 //! Module ownership (see `docs/agents/README.md`): `bytes`, `error`, `block`,
-//! `source`, `row`, `types`, `charset` — Lead; `scan`, `header` — Astra.
+//! `source`, `row`, `types`, `charset`, `dict`, `value` — Lead; `scan`, `header` — Astra.
 #![cfg_attr(not(test), deny(clippy::unwrap_used))]
 
 pub mod block;
 pub mod bytes;
 pub mod charset;
+pub mod dict;
 pub mod error;
 pub mod row;
 pub mod scan;

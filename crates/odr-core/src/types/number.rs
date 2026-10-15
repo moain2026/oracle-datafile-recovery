@@ -145,6 +145,45 @@ impl OraNumber {
     }
 }
 
+impl OraNumber {
+    /// The value as an exact `i64`, for dictionary columns (`OBJ#`, `FILE#`,
+    /// `BLOCK#`, `TYPE#`…). `None` if it has a fractional part, is infinite,
+    /// or does not fit — never a rounded or truncated value.
+    pub fn to_i64(&self) -> Option<i64> {
+        let (negative, exponent, digits, len) = match *self {
+            Self::Zero => return Some(0),
+            Self::PosInfinity | Self::NegInfinity => return None,
+            Self::Finite {
+                negative,
+                exponent,
+                digits,
+                len,
+            } => (negative, exponent, digits, len),
+        };
+        // value = Σ digits[k] · 100^(exponent − k); integral iff every
+        // meaningful digit has a non-negative power (trailing zero digits are
+        // never stored, so `len` already excludes them).
+        let last = i32::from(len).checked_sub(1)?;
+        if exponent < 0 || i32::from(exponent) < last {
+            return None;
+        }
+        let mut acc: i128 = 0;
+        for k in 0..=i32::from(exponent) {
+            let d = if k <= last {
+                i128::from(*digits.get(usize::try_from(k).ok()?)?)
+            } else {
+                0
+            };
+            acc = acc.checked_mul(100)?.checked_add(d)?;
+            if acc > i128::from(i64::MAX) + 1 {
+                return None;
+            }
+        }
+        let signed = if negative { acc.checked_neg()? } else { acc };
+        i64::try_from(signed).ok()
+    }
+}
+
 impl fmt::Display for OraNumber {
     /// Canonical decimal text, e.g. `0`, `-12.5`, `0.000123`, `1E+125` is
     /// written out in full (`1` followed by 125 zeros). Infinity: `~` / `-~`
