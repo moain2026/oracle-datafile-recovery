@@ -1,0 +1,22 @@
+[package]
+name = "odr-core"
+description = "Oracle Datafile Recovery: zero-trust, read-only parsing core for Oracle datafiles."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+odr-testkit.workspace = true
+proptest.workspace = true
+
+[lints]
+workspace = true

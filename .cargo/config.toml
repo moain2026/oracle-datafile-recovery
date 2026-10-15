@@ -1,0 +1,4 @@
+# Windows: link the C runtime statically so odr.exe runs on any Windows Server
+# without installing the Visual C++ Redistributable.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

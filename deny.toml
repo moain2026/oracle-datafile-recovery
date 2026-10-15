@@ -1,0 +1,29 @@
+# Dependency policy (ADR-0003). Copyleft licences are rejected so the product
+# can be shipped under any commercial licence.
+[graph]
+all-features = true
+
+[licenses]
+allow = ["MIT", "Apache-2.0", "Apache-2.0 WITH LLVM-exception", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Unicode-3.0"]
+confidence-threshold = 0.9
+[[licenses.exceptions]]
+crate = "odr-core"
+allow = ["LicenseRef-Proprietary"]
+[[licenses.exceptions]]
+crate = "odr-cli"
+allow = ["LicenseRef-Proprietary"]
+[[licenses.exceptions]]
+crate = "odr-testkit"
+allow = ["LicenseRef-Proprietary"]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[advisories]
+yanked = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

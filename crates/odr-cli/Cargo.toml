@@ -1,0 +1,23 @@
+[package]
+name = "odr-cli"
+description = "odr — Oracle Datafile Recovery command line."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+publish = false
+
+[[bin]]
+name = "odr"
+path = "src/main.rs"
+
+[dependencies]
+odr-core.workspace = true
+clap.workspace = true
+anyhow.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true
