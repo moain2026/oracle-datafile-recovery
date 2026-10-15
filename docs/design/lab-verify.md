@@ -15,3 +15,8 @@
 | LV-010 | `row/piece.rs` | قطعة الوجهة لصف مهاجر قد تحمل hrid — غير مدعوم بعد | Lewis [W6] | ⬜ |
 | LV-011 | `charset/mod.rs` | معرّفات NLS_CHARSET_ID: 1/31/51/178/560/871/873/2000 | Oracle Globalization Guide | ⬜ |
 | LV-012 | `charset/mod.rs` | تحويل أوراكل لـ AR8MSWIN1256 يطابق جدول Microsoft cp1256 بايتاً بايتاً (0x80–0xFF) | unicode.org + WHATWG + Python | ⬜ يحتاج جدولاً بكل البايتات في المختبر |
+| LV-013 | `types/timestamp.rs` | TIMESTAMP = DATE(7) + نانوثانية u32 big-endian (تُحذف إن كانت صفراً → 7 أو 11 بايت) | OCI \[O2\] | ⬜ |
+| LV-014 | `types/timestamp.rs` | TZ: بايت 11 بت 7=0 → إزاحة (h−20, m−60) والوقت مخزّن UTC؛ بت 7=1 → region id 12 بت | OCI \[O2\]، تفريغات DUMP منشورة | ⬜ |
+| LV-015 | `types/interval.rs` | INTERVAL: حقول big-endian بانحياز 0x80000000 للـ u32 و60 للبايت | OCI \[O2\] | ⬜ |
+| LV-016 | `types/binary_float.rs` | BINARY_FLOAT/DOUBLE: IEEE big-endian؛ موجب ← رفع بت الإشارة، سالب ← قلب كل البتات | Dyke \[W2\] | ⬜ |
+| LV-017 | `types/rowid.rs` | ROWID الممتد 10 بايت big-endian: objd·rdba·slot؛ النص base64 بأبجدية A–Z a–z 0–9 + / | Concepts \[O1\] | ⬜ |

@@ -12,8 +12,21 @@
 //! 182 INTERVAL YEAR TO MONTH, 183 INTERVAL DAY TO SECOND,
 //! 231 TIMESTAMP WITH LOCAL TIME ZONE.
 
-pub mod date;
-pub mod number;
+// Arithmetic in the datatype decoders is on values widened from `u8`/`u32`
+// into `i16`/`i64` before subtraction, so it cannot overflow.
+#![allow(clippy::arithmetic_side_effects)]
 
+pub mod binary_float;
+pub mod char;
+pub mod date;
+pub mod interval;
+pub mod number;
+pub mod rowid;
+pub mod timestamp;
+
+pub use binary_float::{decode_binary_double, decode_binary_float};
 pub use date::OraDate;
+pub use interval::{IntervalDs, IntervalYm};
 pub use number::OraNumber;
+pub use rowid::OraRowid;
+pub use timestamp::{OraTimestamp, TimeZone};
