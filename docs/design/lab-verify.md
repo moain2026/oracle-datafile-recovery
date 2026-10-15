@@ -43,3 +43,4 @@
 | LV-029 | `scan/header.rs` (Astra S1a, #6) | RDBA smallfile: file# = rdba>>22، block# = rdba & 0x3FFFFF، و block# = الإزاحة الفيزيائية / B (الكتلة 0 = رأس نظام التشغيل) | T4 استنتاج | ⬜ |
 | LV-030 | `block.rs` (مُستعمَل في S1a) | format = النصف المنخفض من البايت 1 = 0x2 (8i+)؛ علم checksum 0x04 في البايت 15 ← XOR لكل الكتلة = 0 | T3 Stawiarski 2018 | ⬜ |
 | — | `scan/header.rs` | ثوابت العيّنة والقبول (1 GiB، 4096، 16، 99/100) **سياسة منتج** لا حقائق أوراكل — لا تُختبر في المختبر بل في Q2 (الدقة) | — | سياسة |
+| LV-031 | `scan/header.rs` (S1a مراجعة #10 B2) | bigfile tablespace: rdba = رقم كتلة 32-بت كاملاً بلا حقل ملف؛ الافتراضي لـ SYSTEM/SYSAUX/USERS منذ 23ai (23.4) و26ai ← لا يجوز إخراج `relative_file` من rdba دون تمييز smallfile/bigfile | T1 Oracle *Managing Tablespaces* 26ai؛ oracle-base 23ai (التخطيط: T4) | ⬜ |
