@@ -21,6 +21,7 @@ pub mod row;
 pub mod scan;
 pub mod source;
 pub mod types;
+pub mod value;
 
 pub use bytes::{ByteOrder, Cursor};
 pub use error::{DecodeError, OdrError};

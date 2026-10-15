@@ -9,10 +9,12 @@
 
 use serde::{Deserialize, Serialize};
 
+pub mod assemble;
 pub mod kdb;
 pub mod ktb;
 pub mod piece;
 
+pub use assemble::{AssembleError, AssembledRow, PieceSource, assemble};
 pub use kdb::{DataBlock, Layout, Slot};
 pub use ktb::data_object_id;
 
