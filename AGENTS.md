@@ -3,6 +3,8 @@
 1. STATUS.md ثم docs/design/architecture.md ثم docs/research/01_foundational_research_ar.md.
 ## الفريق
 وكيلان — اقرأ `docs/agents/README.md` ثم ملفك (`ASTRA.md` / `LEAD.md`). المدير (Lead) يملك العقود وصحة البيانات ويدمج (ADR-0006).
+
+> **Handover (2026-10-15):** start with `docs/handover/NEXT_AGENT_PROMPT.md` and `docs/handover/2026-10-15_handover.md`.
 ## الأوامر (Rust 1.99، مثبت عبر `rust-toolchain.toml`)
 - بناء: `cargo build --workspace` · إصدار Windows: `cargo build --release -p odr-cli` ← `target/release/odr.exe`
 - بوابات الجودة (نفس CI): `cargo fmt --all -- --check` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace` · `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps` · `cargo deny check`

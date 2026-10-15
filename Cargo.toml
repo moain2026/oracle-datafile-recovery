@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/odr-core", "crates/odr-testkit", "crates/odr-cli"]
+members = ["crates/odr-core", "crates/odr-testkit", "crates/odr-cli", "crates/odr-corrupt"]
 exclude = ["fuzz"]
 
 [workspace.package]

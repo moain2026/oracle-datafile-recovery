@@ -374,6 +374,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "odr-corrupt"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "odr-core",
+ "odr-testkit",
+ "proptest",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "odr-testkit"
 version = "0.1.0"
 dependencies = [
