@@ -5,3 +5,6 @@ git mv ci/github-ci.yml .github/workflows/ci.yml && git commit -m "ci: enable" &
 ```
 أو من واجهة GitHub: Add file ← `.github/workflows/ci.yml` ← الصق محتوى `ci/github-ci.yml`.
 يشغّل: fmt · clippy -D warnings · test · doc · build release على **Windows وLinux**، cargo-deny، fuzz دقيقة لكل هدف، ويرفع `odr.exe` كـ artifact.
+
+## Fuzz-workspace licence audit (#9)
+`(cd fuzz && cargo deny check)` uses `fuzz/deny.toml`: product policy plus a single-crate NCSA exception for `libfuzzer-sys` (LLVM libFuzzer, permissive). The fuzz harness is never shipped; `../deny.toml` is unchanged.

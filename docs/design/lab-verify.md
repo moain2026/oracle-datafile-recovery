@@ -40,3 +40,6 @@
 | LV-028 | S1 `header.rs` | خريطة kcvfh (انظر \[R2\] §2)؛ ما بعد @140 يختلف بالإصدار | atoracle.cn \[R2\] | ⬜ لكل إصدار |
 
 \[R2\] = `docs/research/03_deep_research_round2_ar.md`.
+| LV-029 | `scan/header.rs` (Astra S1a, #6) | RDBA smallfile: file# = rdba>>22، block# = rdba & 0x3FFFFF، و block# = الإزاحة الفيزيائية / B (الكتلة 0 = رأس نظام التشغيل) | T4 استنتاج | ⬜ |
+| LV-030 | `block.rs` (مُستعمَل في S1a) | format = النصف المنخفض من البايت 1 = 0x2 (8i+)؛ علم checksum 0x04 في البايت 15 ← XOR لكل الكتلة = 0 | T3 Stawiarski 2018 | ⬜ |
+| — | `scan/header.rs` | ثوابت العيّنة والقبول (1 GiB، 4096، 16، 99/100) **سياسة منتج** لا حقائق أوراكل — لا تُختبر في المختبر بل في Q2 (الدقة) | — | سياسة |
